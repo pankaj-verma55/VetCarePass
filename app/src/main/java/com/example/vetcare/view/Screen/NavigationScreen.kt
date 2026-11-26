@@ -44,7 +44,6 @@ private data class OnboardingPage(
     val description: String
 )
 
-private val DeepNavy = Color(0xFF1D3B68)
 private val AccentTeal = Color(0xFF1BB1D1)
 private val HighlightPillBg = Color(0xFFDDF4FA)
 private val TitleDark = Color(0xFF1A1A1A)

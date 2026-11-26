@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.*
@@ -47,14 +48,14 @@ import com.example.vetcare.R
 import com.example.vetcare.ui.icon.PetCareIcons
 
 // Color Palette extracted from the design
-private val PrimaryTeal = Color(0xFF24A8C2)
-private val DeepNavy = Color(0xFF213A63)
+val PrimaryTeal = Color(0xFF24A8C2)
+val DeepNavy = Color(0xFF213A63)
 private val HeaderBgColor = Color(0xFFF1F6F8)
-private val ScreenBgColor = Color(0xFFFAFAFC)
+val ScreenBgColor = Color(0xFFFAFAFC)
 private val RatingGold = Color(0xFFF6C23E)
 private val BadgeGrayBg = Color(0xFFF4F6F9)
-private val BorderGray = Color(0xFFE6EAF0)
-private val SubtextGray = Color(0xFF7B8794)
+val BorderGray = Color(0xFFE6EAF0)
+val SubtextGray = Color(0xFF7B8794)
 
 data class ServiceCategory(
     val title: String,
@@ -92,7 +93,7 @@ val vets = listOf(
         avatarBg = Color(0xFFDDE7F0),
         imageRes = R.drawable.img_doctor,
         phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
+        direction = "Dmc Hospital"
     ),
     VetDoctor(
         name = "Dr. Taylor Muhs",
@@ -112,7 +113,7 @@ val vets = listOf(
         avatarBg = Color(0xFFDDE7F0),
         imageRes = R.drawable.img_doctor2,
         phone = "9876543210",
-        direction = "Appex Hospital, Sirsa"
+        direction = "New Life Care Hospital,Sirsa"
     ),
     VetDoctor(
         name = "Dr. Amar",
@@ -164,31 +165,33 @@ fun PetCareHomeScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(bottom = 20.dp)
-        ) {
-            // 1. Top Header & Hero Section
-            item {
-                TopHeroBanner()
-            }
-
-            // 2. Services Section
-            item {
-                Spacer(modifier = Modifier.height(20.dp))
-                SectionHeader(title = "Services", onSeeAllClick = onSeeAllServicesClick)
-                Spacer(modifier = Modifier.height(14.dp))
-                LazyRow(
-                    contentPadding = PaddingValues(horizontal = 20.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+        when (selectedTab) {
+            0 -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentPadding = PaddingValues(bottom = 20.dp)
                 ) {
-                    items(services) { service ->
-                        ServiceItem(service)
+                    // 1. Top Header & Hero Section
+                    item {
+                        TopHeroBanner()
                     }
-                }
-            }
+
+                    // 2. Services Section
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        SectionHeader(title = "Services", onSeeAllClick = onSeeAllServicesClick)
+                        Spacer(modifier = Modifier.height(14.dp))
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            items(services) { service ->
+                                ServiceItem(service)
+                            }
+                        }
+                    }
 
 //            // 3. Veterinary Near You Section
 //            item {
@@ -197,38 +200,63 @@ fun PetCareHomeScreen(
 //                Spacer(modifier = Modifier.height(14.dp))
 //            }
 
-            // 3. Veterinary Near You Section (Fixed-height box showing 4 items)
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                SectionHeader(
-                    title = "Veterinary Near You",
-                    onSeeAllClick = onSeeAllVeterinaryClick
-                )
-                Spacer(modifier = Modifier.height(14.dp))
+                    // 3. Veterinary Near You Section (Fixed-height box showing 4 items)
+                    item {
+                        Spacer(modifier = Modifier.height(24.dp))
+                        SectionHeader(
+                            title = "Veterinary Near You",
+                            onSeeAllClick = onSeeAllVeterinaryClick
+                        )
+                        Spacer(modifier = Modifier.height(14.dp))
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(350.dp) 
-                ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(vets.take(4)) { vet ->
-                            VetDoctorCard(vet = vet,
-                                onCardClick = { onDoctorClick(vet) })
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(350.dp)
+                        ) {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                items(vets.take(4)) { vet ->
+                                    VetDoctorCard(
+                                        vet = vet,
+                                        onCardClick = { onDoctorClick(vet) })
+                                }
+                            }
                         }
                     }
-                }
-            }
 //            items(vets) { vet ->
 //                VetDoctorCard(
 //                    vet = vet,
 //                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
 //                )
 //            }
+                }
+            }
+            1 -> {
+                // Tab 2: Message Screen
+                MessageScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onDoctorClick = onDoctorClick
+                )
+            }
+
+            2 -> {
+                // Tab 3: Map Screen
+                MapScreen(
+                    vetsList = vets,
+                    modifier = Modifier.padding(paddingValues)
+                )
+            }
+
+            3 -> {
+                // Tab 4: Profile Screen
+                ProfileScreen(
+                    modifier = Modifier.padding(paddingValues)
+                )
+            }
         }
     }
 }
@@ -622,7 +650,7 @@ private fun PetCareBottomNav(
     val navItems = listOf(
         Pair("Home", Icons.Default.Home),
         Pair("Message", Icons.Outlined.ChatBubbleOutline),
-        Pair("My Booking", Icons.Outlined.CalendarMonth),
+        Pair("Map", Icons.Outlined.Map),
         Pair("Profile", Icons.Outlined.PersonOutline)
     )
 

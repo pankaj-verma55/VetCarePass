@@ -59,4 +59,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
     implementation("androidx.navigation:navigation-compose:2.8.5")
+//    implementation("org.maplibre.compose:maplibre-compose:0.20.0")
+    implementation("org.maplibre.compose:maplibre-compose:0.12.1")
 }

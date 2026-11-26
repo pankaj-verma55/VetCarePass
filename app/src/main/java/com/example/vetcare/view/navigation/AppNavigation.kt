@@ -33,7 +33,7 @@ val vets = listOf(
         avatarBg = Color(0xFFDDE7F0),
         imageRes = R.drawable.img_doctor,
         phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
+        direction = "Dmc Hospital,sirsa"
     ),
     VetDoctor(
         name = "Dr. Taylor Muhs",
@@ -53,7 +53,7 @@ val vets = listOf(
         avatarBg = Color(0xFFDDE7F0),
         imageRes = R.drawable.img_doctor2,
         phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
+        direction = "New Life Care Hospital,Sirsa"
     ),
     VetDoctor(
         name = "Dr. Amar",
