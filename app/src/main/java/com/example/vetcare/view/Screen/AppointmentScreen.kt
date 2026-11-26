@@ -468,5 +468,8 @@ private fun DoctorReviewCard(review: DoctorReview) {
                 lineHeight = 19.sp
             )
         }
+
+
+
     }
 }
