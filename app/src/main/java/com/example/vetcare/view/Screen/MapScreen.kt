@@ -79,9 +79,8 @@ fun MapScreen(
     val scope = rememberCoroutineScope()
 
     // Default reference center (Sirsa) if GPS permission is denied
-    val fallbackLat = 29.5321
-    val fallbackLng = 75.0318
-
+    val fallbackLat = 29.528096419266113
+    val fallbackLng = 75.02913649313219
     var userLat by remember { mutableDoubleStateOf(fallbackLat) }
     var userLng by remember { mutableDoubleStateOf(fallbackLng) }
     var hasLiveLocation by remember { mutableStateOf(false) }
@@ -252,9 +251,9 @@ fun MapScreen(
             CircleLayer(
                 id = "vet-clinic-pins",
                 source = vetSource,
-                radius = const(10.dp),
+                radius = const(8.dp),
                 color = const(MapTeal),
-                strokeWidth = const(3.dp),
+                strokeWidth = const(2.dp),
                 strokeColor = const(Color.White)
             )
         }
@@ -399,7 +398,7 @@ fun MapScreen(
                         cameraState.animateTo(
                             CameraPosition(
                                 target = Position(longitude = userLng, latitude = userLat),
-                                zoom = 15.0
+                                zoom = 14.0
                             )
                         )
                     }
