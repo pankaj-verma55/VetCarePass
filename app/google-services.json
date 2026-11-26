@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "978002862846",
+    "project_id": "vetcarepass-18fc5",
+    "storage_bucket": "vetcarepass-18fc5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978002862846:android:3d8afd1fe0a096d0da7baf",
+        "android_client_info": {
+          "package_name": "com.example.vetcare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2h05UKU9Aifj1UbAOJVDUiUKG4DtGn0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
