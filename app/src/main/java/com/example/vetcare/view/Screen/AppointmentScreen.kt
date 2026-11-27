@@ -30,7 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vetcare.model.data.VetDoctor
+import coil.compose.AsyncImage
+import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.utils.IntentUtils.openDialer
 import com.example.vetcare.utils.IntentUtils.openGoogleMapsDirections
 
@@ -51,7 +52,7 @@ private data class DoctorReview(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppointmentScreen(
-    vet: VetDoctor,
+    vet: FirestoreClinicItem?,
     onBackClick: () -> Unit = {},
     onBookNowSuccess: () -> Unit = {}
 ) {
@@ -132,28 +133,28 @@ fun AppointmentScreen(
                 ) {
                     // Quick Call Button
                     OutlinedIconButton(
-                        onClick = { openDialer(context, vet.phone) },
+                        onClick = { openDialer(context, vet?.phone) },
                         modifier = Modifier.size(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(1.dp, AppDivider)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Call,
-                            contentDescription = "Call ${vet.name}",
+                            contentDescription = "Call ${vet?.name}",
                             tint = AppTeal
                         )
                     }
 
                     // Quick Directions Button
                     OutlinedIconButton(
-                        onClick = { openGoogleMapsDirections(context, vet.direction) },
+                        onClick = { openGoogleMapsDirections(context, vet?.direction ?: "") },
                         modifier = Modifier.size(50.dp),
                         shape = RoundedCornerShape(12.dp),
                         border = BorderStroke(1.dp, AppDivider)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Directions,
-                            contentDescription = "Directions to ${vet.name}",
+                            contentDescription = "Directions to ${vet?.name}",
                             tint = AppNavy
                         )
                     }
@@ -163,7 +164,7 @@ fun AppointmentScreen(
                         onClick = {
                             Toast.makeText(
                                 context,
-                                "Appointment requested with ${vet.name}!",
+                                "Appointment requested with ${vet?.name}!",
                                 Toast.LENGTH_SHORT
                             ).show()
                             onBookNowSuccess()
@@ -197,32 +198,42 @@ fun AppointmentScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(vet.avatarBg)
-                ) {
-                    Image(
-                        painter = painterResource(id = vet.imageRes),
-                        contentDescription = vet.name,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                vet?.avatarBg?.let {
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(it)
+                    ) {
+//                        Image(
+//                            painter = painterResource(id = vet.imageUrl),
+//                            contentDescription = vet.name,
+//                            modifier = Modifier.fillMaxSize(),
+//                            contentScale = ContentScale.Crop
+//                        )
+                        AsyncImage(
+                            model = vet.imageUrl.ifBlank { vet.fallbackImageRes },
+                            contentDescription = vet.name,
+                            placeholder = painterResource(id = vet.fallbackImageRes),
+                            error = painterResource(id = vet.fallbackImageRes),
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = vet.name,
+                        text = vet?.name ?: "",
                         color = AppNavy,
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = vet.specialty,
+                        text = vet?.specialty ?: "",
                         color = AppSubGray,
                         fontSize = 13.sp
                     )
@@ -238,7 +249,7 @@ fun AppointmentScreen(
                         )
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = vet.experience,
+                            text = vet?.experience ?: "",
                             color = AppSubGray,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
@@ -257,7 +268,7 @@ fun AppointmentScreen(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = vet.rating,
+                            text = vet?.rating ?: "",
                             color = Color(0xFFF6C23E),
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
@@ -273,7 +284,7 @@ fun AppointmentScreen(
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            text = vet.distance,
+                            text = vet?.distance ?: "",
                             color = AppSubGray,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
@@ -296,7 +307,7 @@ fun AppointmentScreen(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = vet.about,
+                text = vet?.about ?: "",
                 color = AppSubGray,
                 fontSize = 14.sp,
                 lineHeight = 21.sp
@@ -333,14 +344,14 @@ fun AppointmentScreen(
                 Spacer(modifier = Modifier.width(14.dp))
                 Column {
                     Text(
-                        text = vet.openDays,
+                        text = vet?.openDays ?: "",
                         color = AppNavy,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "${vet.openHours}  •  Sunday Closed",
+                        text = "${vet?.openHours}  •  Sunday Closed",
                         color = AppSubGray,
                         fontSize = 13.sp
                     )
@@ -373,7 +384,7 @@ fun AppointmentScreen(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${vet.rating} Overall",
+                        text = "${vet?.rating} Overall",
                         color = AppTeal,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp

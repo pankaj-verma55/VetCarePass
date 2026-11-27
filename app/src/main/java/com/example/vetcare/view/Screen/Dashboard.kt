@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Map
@@ -24,6 +25,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,28 +43,233 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vetcare.R
 import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.model.data.ServiceCategory
 import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.ui.icon.PetCareIcons
 import com.example.vetcare.utils.IntentUtils
 
 val PrimaryTeal = Color(0xFF24A8C2)
 val DeepNavy = Color(0xFF213A63)
 private val HeaderBgColor = Color(0xFFF1F6F8)
 val ScreenBgColor = Color(0xFFFAFAFC)
-private val RatingGold = Color(0xFFF6C23E)
+val RatingGold = Color(0xFFF6C23E)
 private val BadgeGrayBg = Color(0xFFF4F6F9)
 val BorderGray = Color(0xFFE6EAF0)
 val SubtextGray = Color(0xFF7B8794)
 
+//val services = listOf(
+//    ServiceCategory("Veterinary", PetCareIcons.VeterinaryBadge),
+//    ServiceCategory("Food", PetCareIcons.FoodBowl),
+//    ServiceCategory("Pharmacy", PetCareIcons.PharmacyCross),
+//    ServiceCategory("Boarding", PetCareIcons.PetBoarding),
+//    ServiceCategory("Grooming", Icons.Default.Pets)
+//)
 @Composable
-fun PetCareHomeScreen(
+fun DashBoardScreen(
     viewModel: HomeViewModel = viewModel(),
     onSeeAllServicesClick: () -> Unit = {},
     onSeeAllVeterinaryClick: () -> Unit = {},
     onDoctorClick: (VetDoctor) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+        val tenDoctorsList = listOf(
+            FirestoreClinicItem(
+                id = "vet_1",
+                placeId = "vet_1",
+                name = "Dr. Michael Grossett",
+                specialty = "Veterinary Neurosurgeon",
+                address = "DMC Hospital, Sector 14, Gurugram",
+                phone = "9876543210",
+                rating = "4.8",
+                distance = "1.2 KM Away",
+                latitude = 28.4744,
+                longitude = 77.0405,
+                direction = "DMC Hospital, Sector 14, Gurugram",
+                avatarBgHex = "#DDE7F0",
+                imageUrl = "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400",
+                experience = "8 Years Experience",
+                about = "Senior veterinary neurosurgeon specializing in spinal surgery, neurological disorders, and critical care for dogs and cats.",
+                openDays = "Monday - Saturday",
+                openHours = "09:30 AM - 07:30 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_2",
+                placeId = "vet_2",
+                name = "Dr. Taylor Muhs",
+                specialty = "Animal Welfare & General Care",
+                address = "Apex Pet Hospital, DLF Phase 4, Gurugram",
+                phone = "9811223344",
+                rating = "4.6",
+                distance = "2.0 KM Away",
+                latitude = 28.4652,
+                longitude = 77.0815,
+                direction = "Apex Pet Hospital, DLF Phase 4, Gurugram",
+                avatarBgHex = "#E8E2D9",
+                imageUrl = "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400",
+                experience = "5 Years Experience",
+                about = "Dedicated to preventive healthcare, routine vaccinations, nutrition counseling, and compassionate treatment for companion pets.",
+                openDays = "Monday - Saturday",
+                openHours = "10:00 AM - 08:00 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_3",
+                placeId = "vet_3",
+                name = "Dr. Pankaj Sharma",
+                specialty = "Small Animal Surgeon",
+                address = "New Life Care Vet Clinic, Sushant Lok 1, Gurugram",
+                phone = "9911002233",
+                rating = "4.9",
+                distance = "2.4 KM Away",
+                latitude = 28.4595,
+                longitude = 77.0724,
+                direction = "New Life Care Vet Clinic, Sushant Lok 1, Gurugram",
+                avatarBgHex = "#DDE7F0",
+                imageUrl = "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400",
+                experience = "7 Years Experience",
+                about = "Experienced soft-tissue and orthopedic veterinary surgeon with modern ultrasound and diagnostic facilities.",
+                openDays = "Monday - Sunday",
+                openHours = "09:00 AM - 09:00 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_4",
+                placeId = "vet_4",
+                name = "Dr. Amar Verma",
+                specialty = "Veterinary Dermatologist",
+                address = "Paws & Fur Clinic, Sector 56, Gurugram",
+                phone = "9871122334",
+                rating = "4.7",
+                distance = "1.5 KM Away",
+                latitude = 28.4235,
+                longitude = 77.1012,
+                direction = "Paws & Fur Clinic, Sector 56, Gurugram",
+                avatarBgHex = "#E8E2D9",
+                imageUrl = "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400",
+                experience = "6 Years Experience",
+                about = "Specialist in pet skin allergies, fungal infections, coat health, and chronic ear conditions.",
+                openDays = "Tuesday - Sunday",
+                openHours = "10:00 AM - 07:00 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_5",
+                placeId = "vet_5",
+                name = "Dr. Ananya Rao",
+                specialty = "Feline & Exotic Pet Specialist",
+                address = "Whiskers & Tails Hospital, South City 2, Gurugram",
+                phone = "9810987654",
+                rating = "4.9",
+                distance = "3.1 KM Away",
+                latitude = 28.4148,
+                longitude = 77.0561,
+                direction = "Whiskers & Tails Hospital, South City 2, Gurugram",
+                avatarBgHex = "#DDE7F0",
+                imageUrl = "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400",
+                experience = "9 Years Experience",
+                about = "Fear-free feline medicine specialist providing low-stress diagnostics, dental care, and wellness plans for cats and birds.",
+                openDays = "Monday - Saturday",
+                openHours = "09:30 AM - 06:30 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_6",
+                placeId = "vet_6",
+                name = "Dr. Rohan Kapoor",
+                specialty = "Veterinary Cardiologist",
+                address = "Heartland Animal Clinic, Golf Course Road, Gurugram",
+                phone = "9822334455",
+                rating = "4.7",
+                distance = "3.8 KM Away",
+                latitude = 28.4489,
+                longitude = 77.0998,
+                direction = "Heartland Animal Clinic, Golf Course Road, Gurugram",
+                avatarBgHex = "#E8E2D9",
+                imageUrl = "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400",
+                experience = "10 Years Experience",
+                about = "Board-trained veterinary cardiologist offering echocardiography, ECG screening, and senior pet heart management.",
+                openDays = "Monday - Friday",
+                openHours = "10:30 AM - 06:00 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_7",
+                placeId = "vet_7",
+                name = "Dr. Priya Nair",
+                specialty = "Emergency & Critical Care",
+                address = "24x7 Pet Trauma Center, Sector 29, Gurugram",
+                phone = "9899887766",
+                rating = "4.8",
+                distance = "2.7 KM Away",
+                latitude = 28.4682,
+                longitude = 77.0631,
+                direction = "24x7 Pet Trauma Center, Sector 29, Gurugram",
+                avatarBgHex = "#DDE7F0",
+                imageUrl = "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400",
+                experience = "7 Years Experience",
+                about = "Round-the-clock emergency veterinarian handling trauma, poisoning, oxygen therapy, and ICU hospitalization.",
+                openDays = "Monday - Sunday",
+                openHours = "Open 24 Hours"
+            ),
+            FirestoreClinicItem(
+                id = "vet_8",
+                placeId = "vet_8",
+                name = "Dr. Vikram Malhotra",
+                specialty = "Orthopedic & Joint Specialist",
+                address = "ActivePaws Ortho Clinic, Nirvana Country, Gurugram",
+                phone = "9818765432",
+                rating = "4.6",
+                distance = "4.2 KM Away",
+                latitude = 28.4191,
+                longitude = 77.0698,
+                direction = "ActivePaws Ortho Clinic, Nirvana Country, Gurugram",
+                avatarBgHex = "#E8E2D9",
+                imageUrl = "https://images.unsplash.com/photo-1618498082410-b4aa22193b38?w=400",
+                experience = "11 Years Experience",
+                about = "Specializes in fracture repair, hip dysplasia management, ligament reconstruction, and post-op physiotherapy.",
+                openDays = "Monday - Saturday",
+                openHours = "09:30 AM - 07:00 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_9",
+                placeId = "vet_9",
+                name = "Dr. Sneha Kulkarni",
+                specialty = "Veterinary Dentist & Nutrition",
+                address = "Happy Bark Dental & Wellness, Sohna Road, Gurugram",
+                phone = "9876012345",
+                rating = "4.5",
+                distance = "4.5 KM Away",
+                latitude = 28.4089,
+                longitude = 77.0432,
+                direction = "Happy Bark Dental & Wellness, Sohna Road, Gurugram",
+                avatarBgHex = "#DDE7F0",
+                imageUrl = "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=400",
+                experience = "4 Years Experience",
+                about = "Focuses on ultrasonic dental scaling, oral surgery, puppy vaccination schedules, and tailored weight-management diets.",
+                openDays = "Wednesday - Monday",
+                openHours = "10:00 AM - 07:30 PM"
+            ),
+            FirestoreClinicItem(
+                id = "vet_10",
+                placeId = "vet_10",
+                name = "Dr. Kabir Bedi",
+                specialty = "Ophthalmology & Internal Medicine",
+                address = "ClearVision Pet Hospital, Palam Vihar, Gurugram",
+                phone = "9958112233",
+                rating = "4.8",
+                distance = "5.0 KM Away",
+                latitude = 28.5085,
+                longitude = 77.0321,
+                direction = "ClearVision Pet Hospital, Palam Vihar, Gurugram",
+                avatarBgHex = "#E8E2D9",
+                imageUrl = "https://images.unsplash.com/photo-1622902046580-2b47f47f5471?w=400",
+                experience = "6 Years Experience",
+                about = "Dedicated to pet eye care, cataract evaluations, and comprehensive internal medicine diagnostics.",
+                openDays = "Monday - Saturday",
+                openHours = "09:30 AM - 07:30 PM"
+            )
+        )
 
+// Trigger once to upload all 10 into Firestore "clinics" collection:
+        tenDoctorsList.forEach { viewModel.saveClinicToFirestore(it) }
+    }
     Scaffold(
         containerColor = ScreenBgColor,
         bottomBar = {
@@ -119,12 +326,30 @@ fun PetCareHomeScreen(
                                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                items(uiState.vets.take(4), key = { it.id }) { vet ->
-                                    VetDoctorCard(
-                                        vet = vet,
-                                        onCardClick = { onDoctorClick(vet) }
-                                    )
+                                if (uiState.firestoreClinics.isNotEmpty()) {
+                                    items(
+                                        items = uiState.firestoreClinics.take(4),
+                                        key = { it.id }
+                                    ) { clinic ->
+                                        FirestoreClinicCard(clinic = clinic)
+                                    }
+                                } else {
+                                    items(
+                                        items = uiState.vets.take(4),
+                                        key = { it.id }
+                                    ) { vet ->
+                                        VetDoctorCard(
+                                            vet = vet,
+                                            onCardClick = { onDoctorClick(vet) }
+                                        )
+                                    }
                                 }
+//                                items(uiState.vets.take(4), key = { it.id }) { vet ->
+//                                    VetDoctorCard(
+//                                        vet = vet,
+//                                        onCardClick = { onDoctorClick(vet) }
+//                                    )
+//                                }
                             }
                         }
                     }
@@ -442,7 +667,7 @@ fun VetDoctorCard(
 }
 
 @Composable
-private fun InfoBadge(
+fun InfoBadge(
     icon: ImageVector,
     iconTint: Color,
     text: String,
@@ -519,6 +744,6 @@ private fun PetCareBottomNav(
 
 @Preview(showBackground = true)
 @Composable
-fun PetCareHomeScreenPreview() {
-    PetCareHomeScreen()
+fun DashBoardScreenPreview() {
+    DashBoardScreen()
 }

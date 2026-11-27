@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.vetcare.view.Screen.AppointmentScreen
 import com.example.vetcare.view.Screen.NavigationScreen
-import com.example.vetcare.view.Screen.PetCareHomeScreen
+import com.example.vetcare.view.Screen.DashBoardScreen
 import com.example.vetcare.view.Screen.ProvidesServices
 import com.example.vetcare.view.Screen.VeterinaryNearYou
 import androidx.compose.runtime.collectAsState
@@ -49,7 +49,7 @@ fun AppNavigation(
         }
 
         composable(route = Screen.Dashboard.route) {
-            PetCareHomeScreen(
+            DashBoardScreen(
                 viewModel = homeViewModel,
                 onSeeAllServicesClick = {
                     navController.navigate(Screen.ProvidesServices.route)
@@ -85,7 +85,7 @@ fun AppNavigation(
             arguments = listOf(navArgument("vetId") { type = NavType.StringType })
         ) { backStackEntry ->
             val vetId = backStackEntry.arguments?.getString("vetId") ?: ""
-            val vet = homeViewModel.getVetById(vetId)
+            val vet = homeViewModel.getClinicById(vetId)
 
             AppointmentScreen(
                 vet = vet,

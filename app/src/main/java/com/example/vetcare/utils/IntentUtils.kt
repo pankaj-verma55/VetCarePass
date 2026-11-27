@@ -7,7 +7,7 @@ import android.widget.Toast
 import androidx.core.net.toUri
 
 object IntentUtils {
-    fun openDialer(context: Context, phoneNumber: String) {
+    fun openDialer(context: Context, phoneNumber: String?) {
         val intent = Intent(Intent.ACTION_DIAL).apply {
             data = "tel:$phoneNumber".toUri()
         }
