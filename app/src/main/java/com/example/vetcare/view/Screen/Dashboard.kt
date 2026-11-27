@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Map
@@ -46,7 +45,6 @@ import com.example.vetcare.ViewModel.HomeViewModel
 import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.model.data.ServiceCategory
 import com.example.vetcare.model.data.VetDoctor
-import com.example.vetcare.ui.icon.PetCareIcons
 import com.example.vetcare.utils.IntentUtils
 
 val PrimaryTeal = Color(0xFF24A8C2)
@@ -70,7 +68,8 @@ fun DashBoardScreen(
     viewModel: HomeViewModel = viewModel(),
     onSeeAllServicesClick: () -> Unit = {},
     onSeeAllVeterinaryClick: () -> Unit = {},
-    onDoctorClick: (VetDoctor) -> Unit = {}
+    onDoctorClick: (VetDoctor) -> Unit = {},
+    onAddDoctor: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
@@ -373,7 +372,8 @@ fun DashBoardScreen(
 
             3 -> {
                 ProfileScreen(
-                    modifier = Modifier.padding(paddingValues)
+                    modifier = Modifier.padding(paddingValues),
+                    onAddDoctor = onAddDoctor
                 )
             }
         }

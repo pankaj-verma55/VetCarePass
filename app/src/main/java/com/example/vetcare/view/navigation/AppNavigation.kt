@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.view.Screen.AddDoctorClinicScreen
 
 sealed class Screen(val route: String) {
     data object Onboarding : Screen("onboarding")
@@ -24,6 +25,7 @@ sealed class Screen(val route: String) {
     data object Appointment : Screen("appointment/{vetId}") {
         fun createRoute(vetId: String) = "appointment/$vetId"
     }
+    data object AddClinic : Screen("add_clinic")
 }
 
 @Composable
@@ -59,6 +61,9 @@ fun AppNavigation(
                 },
                 onDoctorClick = { selectedVet ->
                     navController.navigate(Screen.Appointment.createRoute(selectedVet.id))
+                },
+                onAddDoctor = {
+                    navController.navigate(Screen.AddClinic.route)
                 }
             )
         }
@@ -77,6 +82,13 @@ fun AppNavigation(
                 onDoctorClick = { selectedVet ->
                     navController.navigate(Screen.Appointment.createRoute(selectedVet.id))
                 }
+            )
+        }
+
+        composable(route = Screen.AddClinic.route) {
+            AddDoctorClinicScreen(
+                homeViewModel = homeViewModel,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
