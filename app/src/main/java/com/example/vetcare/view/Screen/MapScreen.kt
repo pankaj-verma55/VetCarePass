@@ -41,6 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.utils.IntentUtils.openDialer
+import com.example.vetcare.utils.IntentUtils.openGoogleMapsDirections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -71,7 +74,7 @@ private data class VetPin(
 
 @Composable
 fun MapScreen(
-    vetsList: List<VetDoctor> = vets,
+    vetsList: List<VetDoctor>,
     modifier: Modifier = Modifier,
     onDoctorClick: (VetDoctor) -> Unit = {}
 ) {
@@ -79,9 +82,8 @@ fun MapScreen(
     val scope = rememberCoroutineScope()
 
     // Default reference center (Sirsa) if GPS permission is denied
-    val fallbackLat = 29.5321
-    val fallbackLng = 75.0318
-
+    val fallbackLat = 29.528096419266113
+    val fallbackLng = 75.02913649313219
     var userLat by remember { mutableDoubleStateOf(fallbackLat) }
     var userLng by remember { mutableDoubleStateOf(fallbackLng) }
     var hasLiveLocation by remember { mutableStateOf(false) }
@@ -252,9 +254,9 @@ fun MapScreen(
             CircleLayer(
                 id = "vet-clinic-pins",
                 source = vetSource,
-                radius = const(10.dp),
+                radius = const(8.dp),
                 color = const(MapTeal),
-                strokeWidth = const(3.dp),
+                strokeWidth = const(2.dp),
                 strokeColor = const(Color.White)
             )
         }
@@ -399,7 +401,7 @@ fun MapScreen(
                         cameraState.animateTo(
                             CameraPosition(
                                 target = Position(longitude = userLng, latitude = userLat),
-                                zoom = 15.0
+                                zoom = 14.0
                             )
                         )
                     }

@@ -16,23 +16,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.model.data.FirestoreClinicItem
+import com.example.vetcare.model.data.VetDoctor
+import kotlin.collections.filter
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VeterinaryNearYou(
     modifier: Modifier = Modifier,
-    vets: List<VetDoctor> = emptyList(),
+    viewModel: HomeViewModel = viewModel(),
     onBackClick: () -> Unit = {},
-    onDoctorClick: (VetDoctor) -> Unit = {}
+    onDoctorClick: (FirestoreClinicItem) -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    val filteredVets = remember(searchQuery, vets) {
+    val filteredClinics: List<FirestoreClinicItem> = remember(searchQuery, uiState.firestoreClinics) {
         if (searchQuery.isBlank()) {
-            vets
+            uiState.firestoreClinics
         } else {
-            vets.filter {
+            uiState.firestoreClinics.filter {
                 it.name.contains(searchQuery, ignoreCase = true) ||
-                        it.specialty.contains(searchQuery, ignoreCase = true)
+                        it.specialty.contains(searchQuery, ignoreCase = true) ||
+                        it.address.contains(searchQuery, ignoreCase = true)
             }
         }
     }
@@ -112,8 +120,37 @@ fun VeterinaryNearYou(
                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(filteredVets) { vet ->
-                    VetDoctorCard(vet = vet,onCardClick = { onDoctorClick(vet) })
+                items(
+                    items = filteredClinics,
+                    key = { it.id }
+                ) { clinic ->
+                    // 3. Pass the single `clinic` item and map it to VetDoctor on click
+                    FirestoreClinicCard(
+                        clinic = clinic,
+                        onCardClick = {
+                            onDoctorClick(
+                                FirestoreClinicItem(
+                                    id = clinic.id,
+                                    name = clinic.name,
+                                    specialty = clinic.specialty,
+                                    rating = clinic.rating,
+                                    distance = clinic.distance,
+                                    phone = clinic.phone,
+                                    direction = clinic.direction.ifBlank { clinic.address },
+                                    experience = clinic.experience,
+                                    about = clinic.about,
+                                    openDays = clinic.openDays,
+                                    openHours = clinic.openHours,
+                                    placeId = clinic.placeId,
+                                    address = clinic.address,
+                                    latitude = clinic.latitude,
+                                    longitude = clinic.longitude,
+                                    avatarBgHex = clinic.avatarBgHex,
+                                    imageUrl = clinic.imageUrl,
+                                )
+                            )
+                        }
+                    )
                 }
             }
         }

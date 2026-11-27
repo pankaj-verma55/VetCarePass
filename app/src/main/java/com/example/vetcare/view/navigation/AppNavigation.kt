@@ -1,95 +1,39 @@
 package com.example.vetcare.view.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.vetcare.R
 import com.example.vetcare.view.Screen.AppointmentScreen
 import com.example.vetcare.view.Screen.NavigationScreen
-import com.example.vetcare.view.Screen.PetCareHomeScreen
+import com.example.vetcare.view.Screen.DashBoardScreen
 import com.example.vetcare.view.Screen.ProvidesServices
-import com.example.vetcare.view.Screen.VetDoctor
 import com.example.vetcare.view.Screen.VeterinaryNearYou
-import com.example.vetcare.view.Screen.services
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.view.Screen.AddDoctorClinicScreen
 
 sealed class Screen(val route: String) {
     data object Onboarding : Screen("onboarding")
     data object Dashboard : Screen("dashboard")
     data object VeterinaryNearYou : Screen("veterinary_near_you")
     data object ProvidesServices : Screen("provides_services")
-    data object Appointment : Screen("appointment/{vetIndex}") {
-        fun createRoute(vetIndex: Int) = "appointment/$vetIndex"
+    data object Appointment : Screen("appointment/{vetId}") {
+        fun createRoute(vetId: String) = "appointment/$vetId"
     }
+    data object AddClinic : Screen("add_clinic")
 }
 
-val vets = listOf(
-    VetDoctor(
-        name = "Dr. Michael Grossett",
-        specialty = "Veterinary Neurosurgeon",
-        rating = "4.1",
-        distance = "1.2 KM Away",
-        avatarBg = Color(0xFFDDE7F0),
-        imageRes = R.drawable.img_doctor,
-        phone = "9876543210",
-        direction = "Dmc Hospital,sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Taylor Muhs",
-        specialty = "Animal Welfare",
-        rating = "4.2",
-        distance = "2.0 KM Away",
-        avatarBg = Color(0xFFE8E2D9),
-        imageRes = R.drawable.img_doctor1,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Pankaj",
-        specialty = "Animal Welfare",
-        rating = "4.9",
-        distance = "4.0 KM Away",
-        avatarBg = Color(0xFFDDE7F0),
-        imageRes = R.drawable.img_doctor2,
-        phone = "9876543210",
-        direction = "New Life Care Hospital,Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Amar",
-        specialty = "Animal Welfare",
-        rating = "4.9",
-        distance = "1.0 KM Away",
-        avatarBg = Color(0xFFE8E2D9),
-        imageRes = R.drawable.img_doctor3,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Taylor Muhs",
-        specialty = "Skin Problem",
-        rating = "4.8",
-        distance = "2.0 KM Away",
-        avatarBg = Color(0xFFDDE7F0),
-        imageRes = R.drawable.img_doctor4,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Taylor",
-        specialty = "Animal Welfare",
-        rating = "4.2",
-        distance = "2.0 KM Away",
-        avatarBg = Color(0xFFE8E2D9),
-        imageRes = R.drawable.img_doctor5,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    )
-)
-
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    homeViewModel: HomeViewModel = viewModel()
+) {
     val navController = rememberNavController()
+    val uiState by homeViewModel.uiState.collectAsState()
 
     NavHost(
         navController = navController,
@@ -99,18 +43,33 @@ fun AppNavigation() {
             NavigationScreen(
                 onGetStartedClick = {
                     navController.navigate(Screen.Dashboard.route) {
-                        popUpTo(Screen.Onboarding.route) {
-                            inclusive = true
-                        }
+                        popUpTo(Screen.Onboarding.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 }
             )
         }
 
-        // Single Dashboard destination with BOTH callbacks wired up
+//        composable(route = Screen.Dashboard.route) {
+//            DashBoardScreen(
+//                viewModel = homeViewModel,
+//                onSeeAllServicesClick = {
+//                    navController.navigate(Screen.ProvidesServices.route)
+//                },
+//                onSeeAllVeterinaryClick = {
+//                    navController.navigate(Screen.VeterinaryNearYou.route)
+//                },
+//                onDoctorClick = { selectedVet ->
+//                    navController.navigate(Screen.Appointment.createRoute(selectedVet.id))
+//                },
+//                onAddDoctor = {
+//                    navController.navigate(Screen.AddClinic.route)
+//                }
+//            )
+//        }
         composable(route = Screen.Dashboard.route) {
-            PetCareHomeScreen(
+            DashBoardScreen(
+                viewModel = homeViewModel,
                 onSeeAllServicesClick = {
                     navController.navigate(Screen.ProvidesServices.route)
                 },
@@ -118,42 +77,75 @@ fun AppNavigation() {
                     navController.navigate(Screen.VeterinaryNearYou.route)
                 },
                 onDoctorClick = { selectedVet ->
-                    val index = vets.indexOf(selectedVet).coerceAtLeast(0)
-                    navController.navigate(Screen.Appointment.createRoute(index))
+                    navController.navigate(Screen.Appointment.createRoute(selectedVet.id))
+                },
+                onAddDoctor = {
+                    navController.navigate(Screen.AddClinic.route)
                 }
             )
         }
 
-        // Uncommented destination for Services "See All"
         composable(route = Screen.ProvidesServices.route) {
             ProvidesServices(
-                servicesList = services,
-                onBackClick = {
-                    navController.popBackStack()
-                }
+                servicesList = uiState.services,
+                onBackClick = { navController.popBackStack() }
             )
         }
+
+//        composable(route = Screen.VeterinaryNearYou.route) {
+//            VeterinaryNearYou(
+//                onBackClick = { navController.popBackStack() },
+//                onDoctorClick = { selectedVet ->
+//                    navController.navigate(Screen.Appointment.createRoute(selectedVet.id))
+//                }
+//            )
+//        }
 
         composable(route = Screen.VeterinaryNearYou.route) {
             VeterinaryNearYou(
-                vets = vets,
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                viewModel = homeViewModel,
+                onBackClick = { navController.popBackStack() },
                 onDoctorClick = { selectedVet ->
-                    val index = vets.indexOf(selectedVet).coerceAtLeast(0)
-                    navController.navigate(Screen.Appointment.createRoute(index))
+                    val targetId = selectedVet.id.ifBlank { selectedVet.placeId }
+                    if (targetId.isNotBlank()) {
+                        navController.navigate(Screen.Appointment.createRoute(targetId))
+                    }
                 }
             )
         }
-        composable(route = Screen.Appointment.route) { backStackEntry ->
-            val vetIndex = backStackEntry.arguments
-                ?.getString("vetIndex")
-                ?.toIntOrNull()
-                ?.coerceIn(0, vets.lastIndex) ?: 0
+
+        composable(route = Screen.AddClinic.route) {
+            AddDoctorClinicScreen(
+                homeViewModel = homeViewModel,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+//        composable(
+//            route = Screen.Appointment.route,
+//            arguments = listOf(navArgument("vetId") { type = NavType.StringType })
+//        ) { backStackEntry ->
+//            val vetId = backStackEntry.arguments?.getString("vetId") ?: ""
+//            val vet = homeViewModel.getClinicById(vetId)
+//
+//            AppointmentScreen(
+//                vet = vet,
+//                onBackClick = { navController.popBackStack() },
+//                onBookNowSuccess = { navController.popBackStack() }
+//            )
+//        }
+
+        composable(
+            route = Screen.Appointment.route,
+            arguments = listOf(navArgument("vetId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val vetId = backStackEntry.arguments?.getString("vetId") ?: ""
+            val vet = uiState.firestoreClinics.find {
+                it.id == vetId || it.placeId == vetId
+            }
 
             AppointmentScreen(
-                vet = vets[vetIndex],
+                vet = vet,
                 onBackClick = { navController.popBackStack() },
                 onBookNowSuccess = { navController.popBackStack() }
             )
