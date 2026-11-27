@@ -18,12 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vetcare.model.data.ServiceCategory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProvidesServices(
     modifier: Modifier = Modifier,
-    servicesList: List<ServiceCategory> = services,
+    servicesList: List<ServiceCategory> ,
     onBackClick: () -> Unit = {},
     onServiceClick: (ServiceCategory) -> Unit = {}
 ) {

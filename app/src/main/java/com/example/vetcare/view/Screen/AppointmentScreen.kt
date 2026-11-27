@@ -30,6 +30,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.utils.IntentUtils.openDialer
+import com.example.vetcare.utils.IntentUtils.openGoogleMapsDirections
 
 private val AppTeal = Color(0xFF24A8C2)
 private val AppNavy = Color(0xFF1D3B68)

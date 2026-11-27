@@ -41,6 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.utils.IntentUtils.openDialer
+import com.example.vetcare.utils.IntentUtils.openGoogleMapsDirections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -71,7 +74,7 @@ private data class VetPin(
 
 @Composable
 fun MapScreen(
-    vetsList: List<VetDoctor> = vets,
+    vetsList: List<VetDoctor>,
     modifier: Modifier = Modifier,
     onDoctorClick: (VetDoctor) -> Unit = {}
 ) {

@@ -4,16 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -35,10 +26,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.utils.IntentUtils
 
 @Composable
 fun MessageScreen(
+    vets: List<VetDoctor>,
     modifier: Modifier = Modifier,
     onDoctorClick: (VetDoctor) -> Unit = {}
 ) {
@@ -65,7 +58,7 @@ fun MessageScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(vets) { vet ->
+            items(vets, key = { it.id }) { vet ->
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -102,7 +95,7 @@ fun MessageScreen(
                             )
                         }
                         IconButton(
-                            onClick = { openDialer(context, vet.phone) },
+                            onClick = { IntentUtils.openDialer(context, vet.phone) },
                             modifier = Modifier
                                 .size(38.dp)
                                 .background(Color(0xFFE3F6FB), CircleShape)

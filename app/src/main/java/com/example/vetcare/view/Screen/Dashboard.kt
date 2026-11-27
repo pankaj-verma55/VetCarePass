@@ -1,10 +1,5 @@
 package com.example.vetcare.view.Screen
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,15 +17,15 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Pets
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonOutline
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,11 +38,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.vetcare.R
-import com.example.vetcare.ui.icon.PetCareIcons
+import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.model.data.ServiceCategory
+import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.utils.IntentUtils
 
-// Color Palette extracted from the design
 val PrimaryTeal = Color(0xFF24A8C2)
 val DeepNavy = Color(0xFF213A63)
 private val HeaderBgColor = Color(0xFFF1F6F8)
@@ -57,115 +54,25 @@ private val BadgeGrayBg = Color(0xFFF4F6F9)
 val BorderGray = Color(0xFFE6EAF0)
 val SubtextGray = Color(0xFF7B8794)
 
-data class ServiceCategory(
-    val title: String,
-    val icon: ImageVector
-)
-
-data class VetDoctor(
-    val name: String,
-    val specialty: String,
-    val rating: String,
-    val distance: String,
-    val avatarBg: Color,
-    @DrawableRes val imageRes: Int,
-    val phone: String,
-    val direction: String,
-    val experience: String = "3 Year Experience",
-    val about: String = "Experienced veterinary specialist dedicated to preventive healthcare, diagnostics, and compassionate treatment for dogs, cats, and small companion pets.",
-    val openDays: String = "Monday - Saturday",
-    val openHours: String = "09:30 AM - 07:30 PM"
-)
-val services = listOf(
-    ServiceCategory("Veterinary", PetCareIcons.VeterinaryBadge),
-    ServiceCategory("Food", PetCareIcons.FoodBowl),
-    ServiceCategory("Pharmacy", PetCareIcons.PharmacyCross),
-    ServiceCategory("Boarding", PetCareIcons.PetBoarding),
-    ServiceCategory("Grooming", Icons.Default.Pets)
-)
-
-val vets = listOf(
-    VetDoctor(
-        name = "Dr. Michael Grossett",
-        specialty = "Veterinary Neurosurgeon",
-        rating = "4.1",
-        distance = "1.2 KM Away",
-        avatarBg = Color(0xFFDDE7F0),
-        imageRes = R.drawable.img_doctor,
-        phone = "9876543210",
-        direction = "Dmc Hospital"
-    ),
-    VetDoctor(
-        name = "Dr. Taylor Muhs",
-        specialty = "Animal Welfare",
-        rating = "4.2",
-        distance = "2.0 KM Away",
-        avatarBg = Color(0xFFE8E2D9),
-        imageRes = R.drawable.img_doctor1,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Pankaj",
-        specialty = "Animal Welfare",
-        rating = "4.9",
-        distance = "4.0 KM Away",
-        avatarBg = Color(0xFFDDE7F0),
-        imageRes = R.drawable.img_doctor2,
-        phone = "9876543210",
-        direction = "New Life Care Hospital,Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Amar",
-        specialty = "Animal Welfare",
-        rating = "4.9",
-        distance = "1.0 KM Away",
-        avatarBg = Color(0xFFE8E2D9),
-        imageRes = R.drawable.img_doctor3,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Taylor Muhs",
-        specialty = "Skin Problem",
-        rating = "4.8",
-        distance = "2.0 KM Away",
-        avatarBg = Color(0xFFDDE7F0),
-        imageRes = R.drawable.img_doctor4,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    ),
-    VetDoctor(
-        name = "Dr. Taylor",
-        specialty = "Animal Welfare",
-        rating = "4.2",
-        distance = "2.0 KM Away",
-        avatarBg = Color(0xFFE8E2D9),
-        imageRes = R.drawable.img_doctor5,
-        phone = "9876543210",
-        direction = "Apex Hospital, Sirsa"
-    )
-)
 @Composable
 fun PetCareHomeScreen(
+    viewModel: HomeViewModel = viewModel(),
     onSeeAllServicesClick: () -> Unit = {},
     onSeeAllVeterinaryClick: () -> Unit = {},
     onDoctorClick: (VetDoctor) -> Unit = {}
 ) {
-    var selectedTab by remember { mutableIntStateOf(0) }
-
-
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         containerColor = ScreenBgColor,
         bottomBar = {
             PetCareBottomNav(
-                selectedIndex = selectedTab,
-                onTabSelected = { selectedTab = it }
+                selectedIndex = uiState.selectedTab,
+                onTabSelected = { viewModel.selectTab(it) }
             )
         }
     ) { paddingValues ->
-        when (selectedTab) {
+        when (uiState.selectedTab) {
             0 -> {
                 LazyColumn(
                     modifier = Modifier
@@ -173,12 +80,13 @@ fun PetCareHomeScreen(
                         .padding(paddingValues),
                     contentPadding = PaddingValues(bottom = 20.dp)
                 ) {
-                    // 1. Top Header & Hero Section
                     item {
-                        TopHeroBanner()
+                        TopHeroBanner(
+                            userName = uiState.userName,
+                            userLocation = uiState.userLocation
+                        )
                     }
 
-                    // 2. Services Section
                     item {
                         Spacer(modifier = Modifier.height(20.dp))
                         SectionHeader(title = "Services", onSeeAllClick = onSeeAllServicesClick)
@@ -187,20 +95,12 @@ fun PetCareHomeScreen(
                             contentPadding = PaddingValues(horizontal = 20.dp),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            items(services) { service ->
+                            items(uiState.services, key = { it.id }) { service ->
                                 ServiceItem(service)
                             }
                         }
                     }
 
-//            // 3. Veterinary Near You Section
-//            item {
-//                Spacer(modifier = Modifier.height(24.dp))
-//                SectionHeader(title = "Veterinary Near You", onSeeAllClick = onSeeAllVeterinaryClick)
-//                Spacer(modifier = Modifier.height(14.dp))
-//            }
-
-                    // 3. Veterinary Near You Section (Fixed-height box showing 4 items)
                     item {
                         Spacer(modifier = Modifier.height(24.dp))
                         SectionHeader(
@@ -219,40 +119,34 @@ fun PetCareHomeScreen(
                                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                items(vets.take(4)) { vet ->
+                                items(uiState.vets.take(4), key = { it.id }) { vet ->
                                     VetDoctorCard(
                                         vet = vet,
-                                        onCardClick = { onDoctorClick(vet) })
+                                        onCardClick = { onDoctorClick(vet) }
+                                    )
                                 }
                             }
                         }
                     }
-//            items(vets) { vet ->
-//                VetDoctorCard(
-//                    vet = vet,
-//                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
-//                )
-//            }
                 }
             }
+
             1 -> {
-                // Tab 2: Message Screen
                 MessageScreen(
+                    vets = uiState.vets,
                     modifier = Modifier.padding(paddingValues),
                     onDoctorClick = onDoctorClick
                 )
             }
 
             2 -> {
-                // Tab 3: Map Screen
                 MapScreen(
-                    vetsList = vets,
+                    vetsList = uiState.vets,
                     modifier = Modifier.padding(paddingValues)
                 )
             }
 
             3 -> {
-                // Tab 4: Profile Screen
                 ProfileScreen(
                     modifier = Modifier.padding(paddingValues)
                 )
@@ -262,21 +156,22 @@ fun PetCareHomeScreen(
 }
 
 @Composable
-private fun TopHeroBanner() {
+private fun TopHeroBanner(
+    userName: String,
+    userLocation: String
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(HeaderBgColor)
             .padding(horizontal = 20.dp, vertical = 18.dp)
     ) {
-        // User Greeting Row
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Profile Avatar Placeholder (Replace with Coil AsyncImage in production)
                 Box(
                     modifier = Modifier
                         .size(46.dp)
@@ -292,14 +187,14 @@ private fun TopHeroBanner() {
 
                 Column {
                     Text(
-                        text = "Hii Pankaj 👋",
+                        text = "Hii $userName 👋",
                         color = PrimaryTeal,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
-                        text = "Gurugram, India",
+                        text = userLocation,
                         color = Color(0xFF1F2933),
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp
@@ -307,7 +202,7 @@ private fun TopHeroBanner() {
                 }
             }
 
-            IconButton(onClick = { /* Handle notifications */ }) {
+            IconButton(onClick = { }) {
                 Icon(
                     imageVector = Icons.Outlined.Notifications,
                     contentDescription = "Notifications",
@@ -319,7 +214,6 @@ private fun TopHeroBanner() {
 
         Spacer(modifier = Modifier.height(22.dp))
 
-        // Hero Banner Content
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -335,7 +229,7 @@ private fun TopHeroBanner() {
                 )
                 Spacer(modifier = Modifier.height(14.dp))
                 Button(
-                    onClick = { /* Handle Get Started */ },
+                    onClick = { },
                     colors = ButtonDefaults.buttonColors(containerColor = DeepNavy),
                     shape = RoundedCornerShape(10.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
@@ -356,7 +250,6 @@ private fun TopHeroBanner() {
                 }
             }
 
-            // 3D Illustration Placeholder (Replace with PainterResource / Image asset)
             Box(
                 modifier = Modifier
                     .weight(0.9f)
@@ -371,7 +264,6 @@ private fun TopHeroBanner() {
                         .clip(RoundedCornerShape(290.dp)),
                     contentScale = ContentScale.Fit
                 )
-//                Text(text = "🧑🏻‍🌾🐕", fontSize = 56.sp)
             }
         }
     }
@@ -416,7 +308,7 @@ private fun SectionHeader(title: String, onSeeAllClick: () -> Unit) {
 private fun ServiceItem(service: ServiceCategory) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable { /* Handle category click */ }
+        modifier = Modifier.clickable { }
     ) {
         Surface(
             modifier = Modifier.size(68.dp),
@@ -443,9 +335,13 @@ private fun ServiceItem(service: ServiceCategory) {
         )
     }
 }
+
 @Composable
-fun VetDoctorCard(vet: VetDoctor, modifier: Modifier = Modifier,
-                  onCardClick: () -> Unit = {}) {
+fun VetDoctorCard(
+    vet: VetDoctor,
+    modifier: Modifier = Modifier,
+    onCardClick: () -> Unit = {}
+) {
     val context = LocalContext.current
 
     Surface(
@@ -455,7 +351,9 @@ fun VetDoctorCard(vet: VetDoctor, modifier: Modifier = Modifier,
         border = BorderStroke(1.dp, BorderGray)
     ) {
         Row(
-            modifier = Modifier.padding(12.dp).clickable{onCardClick()},
+            modifier = Modifier
+                .padding(12.dp)
+                .clickable { onCardClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
@@ -511,7 +409,7 @@ fun VetDoctorCard(vet: VetDoctor, modifier: Modifier = Modifier,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 IconButton(
-                    onClick = { openDialer(context, vet.phone) },
+                    onClick = { IntentUtils.openDialer(context, vet.phone) },
                     modifier = Modifier
                         .size(36.dp)
                         .background(Color(0xFFE3F6FB), CircleShape)
@@ -525,7 +423,7 @@ fun VetDoctorCard(vet: VetDoctor, modifier: Modifier = Modifier,
                 }
 
                 IconButton(
-                    onClick = { openGoogleMapsDirections(context, vet.direction) },
+                    onClick = { IntentUtils.openGoogleMapsDirections(context, vet.direction) },
                     modifier = Modifier
                         .padding(top = 10.dp)
                         .size(36.dp)
@@ -542,76 +440,6 @@ fun VetDoctorCard(vet: VetDoctor, modifier: Modifier = Modifier,
         }
     }
 }
-//@Composable
-//private fun VetDoctorCard(vet: VetDoctor, modifier: Modifier = Modifier) {
-//    Surface(
-//        modifier = modifier.fillMaxWidth(),
-//        shape = RoundedCornerShape(14.dp),
-//        color = Color.White,
-//        border = BorderStroke(1.dp, BorderGray)
-//    ) {
-//        Row(
-//            modifier = Modifier.padding(12.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            // Vet Image Container (Replace with Coil AsyncImage)
-//            Box(
-//                modifier = Modifier
-//                    .size(86.dp)
-//                    .clip(RoundedCornerShape(10.dp))
-//                    .background(vet.avatarBg),
-//                contentAlignment = Alignment.Center
-//            ) {
-//                if (vet.imageRes != null) {
-//                    Image(
-//                        painter = painterResource(id = vet.imageRes),
-//                        contentDescription = vet.name,
-//                        modifier = Modifier.fillMaxSize(),
-//                        contentScale = ContentScale.Crop
-//                    )
-//                } else {
-//                    Text(text = "🩺🐶", fontSize = 28.sp)
-//                }
-////                Image(painter = painterResource(vet.imageRes), contentDescription = "doctor image")
-////                Text(text = "🩺🐶", fontSize = 28.sp)
-//            }
-//
-//            Spacer(modifier = Modifier.width(14.dp))
-//
-//            Column(modifier = Modifier.weight(1f)) {
-//                Text(
-//                    text = vet.name,
-//                    color = DeepNavy,
-//                    fontWeight = FontWeight.Bold,
-//                    fontSize = 16.sp
-//                )
-//                Spacer(modifier = Modifier.height(4.dp))
-//                Text(
-//                    text = vet.specialty,
-//                    color = SubtextGray,
-//                    fontSize = 13.sp
-//                )
-//                Spacer(modifier = Modifier.height(10.dp))
-//
-//                // Rating and Distance Chips
-//                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-//                    InfoBadge(
-//                        icon = Icons.Default.Star,
-//                        iconTint = RatingGold,
-//                        text = vet.rating,
-//                        textColor = RatingGold
-//                    )
-//                    InfoBadge(
-//                        icon = Icons.Default.LocationOn,
-//                        iconTint = DeepNavy,
-//                        text = vet.distance,
-//                        textColor = SubtextGray
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 private fun InfoBadge(
@@ -686,32 +514,6 @@ private fun PetCareBottomNav(
                 )
             )
         }
-    }
-}
-
-fun openDialer(context: Context, phoneNumber: String) {
-    val intent = Intent(Intent.ACTION_DIAL).apply {
-        data = "tel:$phoneNumber".toUri()
-    }
-    try {
-        context.startActivity(intent)
-    } catch (e: Exception) {
-        Toast.makeText(context, "No phone app found", Toast.LENGTH_SHORT).show()
-    }
-}
-
-fun openGoogleMapsDirections(context: Context, destination: String) {
-    val encodedDest = Uri.encode(destination)
-    val mapsUri = "google.navigation:q=$encodedDest".toUri()
-    val mapIntent = Intent(Intent.ACTION_VIEW, mapsUri).apply {
-        setPackage("com.google.android.apps.maps")
-    }
-
-    try {
-        context.startActivity(mapIntent)
-    } catch (e: Exception) {
-        val webUri = "https://www.google.com/maps/dir/?api=1&destination=$encodedDest".toUri()
-        context.startActivity(Intent(Intent.ACTION_VIEW, webUri))
     }
 }
 
