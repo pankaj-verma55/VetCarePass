@@ -69,7 +69,7 @@ fun DashBoardScreen(
     viewModel: HomeViewModel = viewModel(),
     onSeeAllServicesClick: () -> Unit = {},
     onSeeAllVeterinaryClick: () -> Unit = {},
-    onDoctorClick: (VetDoctor) -> Unit = {},
+    onDoctorClick: (FirestoreClinicItem) -> Unit = {},
     onAddDoctor: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -333,19 +333,24 @@ fun DashBoardScreen(
                                     ) { clinic ->
                                         FirestoreClinicCard(clinic = clinic,
                                             onCardClick = { onDoctorClick(
-                                                VetDoctor(
+                                                FirestoreClinicItem(
+                                                    id = clinic.id,
                                                     name = clinic.name,
                                                     specialty = clinic.specialty,
                                                     rating = clinic.rating,
                                                     distance = clinic.distance,
-                                                    avatarBg = clinic.avatarBg,
-                                                    imageRes = clinic.fallbackImageRes,
                                                     phone = clinic.phone,
                                                     direction = clinic.direction.ifBlank { clinic.address },
                                                     experience = clinic.experience,
                                                     about = clinic.about,
                                                     openDays = clinic.openDays,
                                                     openHours = clinic.openHours,
+                                                    placeId = clinic.placeId,
+                                                    address = clinic.address,
+                                                    latitude = clinic.latitude,
+                                                    longitude = clinic.longitude,
+                                                    avatarBgHex = clinic.avatarBgHex,
+                                                    imageUrl = clinic.imageUrl,
                                                 )
                                             ) })
                                     }

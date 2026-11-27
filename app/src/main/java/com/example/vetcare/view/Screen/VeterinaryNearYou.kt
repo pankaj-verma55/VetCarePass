@@ -27,9 +27,8 @@ import kotlin.collections.filter
 fun VeterinaryNearYou(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(),
-    vets: List<VetDoctor> = emptyList(),
     onBackClick: () -> Unit = {},
-    onDoctorClick: (VetDoctor) -> Unit = {}
+    onDoctorClick: (FirestoreClinicItem) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -130,19 +129,24 @@ fun VeterinaryNearYou(
                         clinic = clinic,
                         onCardClick = {
                             onDoctorClick(
-                                VetDoctor(
+                                FirestoreClinicItem(
+                                    id = clinic.id,
                                     name = clinic.name,
                                     specialty = clinic.specialty,
                                     rating = clinic.rating,
                                     distance = clinic.distance,
-                                    avatarBg = clinic.avatarBg,
-                                    imageRes = clinic.fallbackImageRes,
                                     phone = clinic.phone,
                                     direction = clinic.direction.ifBlank { clinic.address },
                                     experience = clinic.experience,
                                     about = clinic.about,
                                     openDays = clinic.openDays,
-                                    openHours = clinic.openHours
+                                    openHours = clinic.openHours,
+                                    placeId = clinic.placeId,
+                                    address = clinic.address,
+                                    latitude = clinic.latitude,
+                                    longitude = clinic.longitude,
+                                    avatarBgHex = clinic.avatarBgHex,
+                                    imageUrl = clinic.imageUrl,
                                 )
                             )
                         }

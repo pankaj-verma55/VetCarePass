@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.model.data.VetDoctor
 import com.example.vetcare.utils.IntentUtils.openDialer
 
@@ -124,7 +125,7 @@ import com.example.vetcare.utils.IntentUtils.openDialer
 fun MessageScreen(
     viewModel: HomeViewModel = viewModel(),
     modifier: Modifier = Modifier,
-    onDoctorClick: (VetDoctor) -> Unit = {},
+    onDoctorClick: (FirestoreClinicItem) -> Unit = {},
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -154,7 +155,7 @@ fun MessageScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onDoctorClick(uiState.firestoreClinics as VetDoctor) },
+                        .clickable { onDoctorClick(FirestoreClinicItem()) },
                     shape = RoundedCornerShape(14.dp),
                     color = Color.White,
                     border = BorderStroke(1.dp, BorderGray)

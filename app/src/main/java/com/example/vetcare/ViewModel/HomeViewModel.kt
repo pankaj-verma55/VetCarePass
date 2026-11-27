@@ -90,7 +90,13 @@ class HomeViewModel(
     }
 
     // Goes inside HomeViewModel (finds a clinic from the loaded _uiState list)
+//    fun getClinicById(clinicId: String): FirestoreClinicItem? {
+//        return _uiState.value.firestoreClinics.find { it.id == clinicId }
+//    }
     fun getClinicById(clinicId: String): FirestoreClinicItem? {
-        return _uiState.value.firestoreClinics.find { it.id == clinicId }
+        val cleanId = clinicId.trim()
+        return _uiState.value.firestoreClinics.find {
+            it.id == cleanId || it.placeId == cleanId
+        }
     }
 }
