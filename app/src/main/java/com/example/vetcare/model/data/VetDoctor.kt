@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 
 data class VetDoctor(
-    val id: String,
+    val id: String="",
     val name: String,
     val specialty: String,
     val rating: String,

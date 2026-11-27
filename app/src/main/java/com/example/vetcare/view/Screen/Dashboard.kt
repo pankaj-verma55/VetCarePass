@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.vetcare.R
 import com.example.vetcare.ViewModel.HomeViewModel
 import com.example.vetcare.model.data.FirestoreClinicItem
@@ -325,24 +326,40 @@ fun DashBoardScreen(
                                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                if (uiState.firestoreClinics.isNotEmpty()) {
+//                                if (uiState.firestoreClinics.isNotEmpty()) {
                                     items(
                                         items = uiState.firestoreClinics.take(4),
                                         key = { it.id }
                                     ) { clinic ->
-                                        FirestoreClinicCard(clinic = clinic)
+                                        FirestoreClinicCard(clinic = clinic,
+                                            onCardClick = { onDoctorClick(
+                                                VetDoctor(
+                                                    name = clinic.name,
+                                                    specialty = clinic.specialty,
+                                                    rating = clinic.rating,
+                                                    distance = clinic.distance,
+                                                    avatarBg = clinic.avatarBg,
+                                                    imageRes = clinic.fallbackImageRes,
+                                                    phone = clinic.phone,
+                                                    direction = clinic.direction.ifBlank { clinic.address },
+                                                    experience = clinic.experience,
+                                                    about = clinic.about,
+                                                    openDays = clinic.openDays,
+                                                    openHours = clinic.openHours,
+                                                )
+                                            ) })
                                     }
-                                } else {
-                                    items(
-                                        items = uiState.vets.take(4),
-                                        key = { it.id }
-                                    ) { vet ->
-                                        VetDoctorCard(
-                                            vet = vet,
-                                            onCardClick = { onDoctorClick(vet) }
-                                        )
-                                    }
-                                }
+//                                } else {
+//                                    items(
+//                                        items = uiState.vets.take(4),
+//                                        key = { it.id }
+//                                    ) { vet ->
+//                                        VetDoctorCard(
+//                                            vet = vet,
+//                                            onCardClick = { onDoctorClick(vet) }
+//                                        )
+//                                    }
+//                                }
 //                                items(uiState.vets.take(4), key = { it.id }) { vet ->
 //                                    VetDoctorCard(
 //                                        vet = vet,
@@ -357,7 +374,7 @@ fun DashBoardScreen(
 
             1 -> {
                 MessageScreen(
-                    vets = uiState.vets,
+//                    vets = uiState.vets,
                     modifier = Modifier.padding(paddingValues),
                     onDoctorClick = onDoctorClick
                 )
@@ -563,7 +580,7 @@ private fun ServiceItem(service: ServiceCategory) {
 
 @Composable
 fun VetDoctorCard(
-    vet: VetDoctor,
+    vet: FirestoreClinicItem,
     modifier: Modifier = Modifier,
     onCardClick: () -> Unit = {}
 ) {
@@ -583,14 +600,16 @@ fun VetDoctorCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(86.dp)
+                    .size(72.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(vet.avatarBg),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = vet.imageRes),
+                AsyncImage(
+                    model = vet.imageUrl.ifBlank { vet.fallbackImageRes },
                     contentDescription = vet.name,
+                    placeholder = painterResource(id = vet.fallbackImageRes),
+                    error = painterResource(id = vet.fallbackImageRes),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
