@@ -142,7 +142,7 @@ fun FirestoreClinicCard(
                         val destination = clinic.address.ifBlank { clinic.name }
                         IntentUtils.openGoogleMapsDirections(context, destination)
                     },
-                    modifier = Modifier
+                    modifier = Modifier.padding(top = 5.dp)
                         .size(36.dp)
                         .background(Color(0xFFE8EEF5), CircleShape)
                 ) {
