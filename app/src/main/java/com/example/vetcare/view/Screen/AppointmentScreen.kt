@@ -19,6 +19,10 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +60,7 @@ fun AppointmentScreen(
     onBookNowSuccess: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    var showMenu by remember { mutableStateOf(false) }
 
     val reviews = listOf(
         DoctorReview(
@@ -104,12 +109,34 @@ fun AppointmentScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* Menu options */ }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More options",
-                            tint = AppNavy
-                        )
+                    Box {
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "More options",
+                                tint = AppNavy
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false },
+                            containerColor = Color.White
+                        ) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = "Saved",
+                                        )
+                                        Text(
+                                            text = "Report",
+                                        )
+                                    },
+                                    onClick = {
+                                        showMenu = false
+                                    }
+                                )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
