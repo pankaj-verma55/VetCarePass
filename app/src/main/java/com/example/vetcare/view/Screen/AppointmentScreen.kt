@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.vetcare.model.data.DoctorReview
 import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.utils.IntentUtils.openDialer
 import com.example.vetcare.utils.IntentUtils.openGoogleMapsDirections
@@ -44,12 +45,28 @@ private val AppSubGray = Color(0xFF7B8794)
 private val AppIconBoxBg = Color(0xFFEBF1F5)
 private val AppDivider = Color(0xFFE8EEF3)
 
-private data class DoctorReview(
-    val reviewerName: String,
-    val petType: String,
-    val rating: String,
-    val date: String,
-    val comment: String
+val reviews = listOf(
+    DoctorReview(
+        reviewerName = "Rahul Sharma",
+        petType = "Golden Retriever",
+        rating = "5.0",
+        date = "2 days ago",
+        comment = "Very polite and patient with my dog. Explained the diagnosis clearly and the treatment worked within days."
+    ),
+    DoctorReview(
+        reviewerName = "Sneha Verma",
+        petType = "Persian Cat",
+        rating = "4.8",
+        date = "1 week ago",
+        comment = "Clean clinic and minimal waiting time. Handled my cat very gently during vaccination."
+    ),
+    DoctorReview(
+        reviewerName = "Amit Gill",
+        petType = "Labrador",
+        rating = "4.7",
+        date = "3 weeks ago",
+        comment = "Great experience overall. Gave practical diet and recovery advice without unnecessary tests."
+    )
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,29 +79,7 @@ fun AppointmentScreen(
     val context = LocalContext.current
     var showMenu by remember { mutableStateOf(false) }
 
-    val reviews = listOf(
-        DoctorReview(
-            reviewerName = "Rahul Sharma",
-            petType = "Golden Retriever",
-            rating = "5.0",
-            date = "2 days ago",
-            comment = "Very polite and patient with my dog. Explained the diagnosis clearly and the treatment worked within days."
-        ),
-        DoctorReview(
-            reviewerName = "Sneha Verma",
-            petType = "Persian Cat",
-            rating = "4.8",
-            date = "1 week ago",
-            comment = "Clean clinic and minimal waiting time. Handled my cat very gently during vaccination."
-        ),
-        DoctorReview(
-            reviewerName = "Amit Gill",
-            petType = "Labrador",
-            rating = "4.7",
-            date = "3 weeks ago",
-            comment = "Great experience overall. Gave practical diet and recovery advice without unnecessary tests."
-        )
-    )
+
 
     Scaffold(
         containerColor = Color.White,
