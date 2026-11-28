@@ -155,7 +155,7 @@ fun MessageScreen(
                 Surface(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onDoctorClick(FirestoreClinicItem()) },
+                        .clickable { onDoctorClick(vet) },
                     shape = RoundedCornerShape(14.dp),
                     color = Color.White,
                     border = BorderStroke(1.dp, BorderGray)
