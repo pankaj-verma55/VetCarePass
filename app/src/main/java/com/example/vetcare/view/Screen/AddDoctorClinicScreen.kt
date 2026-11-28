@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.vetcare.ViewModel.HomeViewModel
 import com.example.vetcare.model.data.FirestoreClinicItem
+import com.example.vetcare.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

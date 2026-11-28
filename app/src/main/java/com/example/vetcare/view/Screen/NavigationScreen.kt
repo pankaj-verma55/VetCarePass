@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.vetcare.R
+import com.example.vetcare.ui.theme.*
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 

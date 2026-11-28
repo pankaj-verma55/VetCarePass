@@ -46,16 +46,9 @@ import com.example.vetcare.ViewModel.HomeViewModel
 import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.model.data.ServiceCategory
 import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.ui.theme.*
 import com.example.vetcare.utils.IntentUtils
 
-val PrimaryTeal = Color(0xFF24A8C2)
-val DeepNavy = Color(0xFF213A63)
-private val HeaderBgColor = Color(0xFFF1F6F8)
-val ScreenBgColor = Color(0xFFFAFAFC)
-val RatingGold = Color(0xFFF6C23E)
-private val BadgeGrayBg = Color(0xFFF4F6F9)
-val BorderGray = Color(0xFFE6EAF0)
-val SubtextGray = Color(0xFF7B8794)
 
 //val services = listOf(
 //    ServiceCategory("Veterinary", PetCareIcons.VeterinaryBadge),
@@ -326,13 +319,14 @@ fun DashBoardScreen(
                                 contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-//                                if (uiState.firestoreClinics.isNotEmpty()) {
-                                    items(
-                                        items = uiState.firestoreClinics.take(4),
-                                        key = { it.id }
-                                    ) { clinic ->
-                                        FirestoreClinicCard(clinic = clinic,
-                                            onCardClick = { onDoctorClick(
+                                items(
+                                    items = uiState.firestoreClinics.take(4),
+                                    key = { it.id }
+                                ) { clinic ->
+                                    FirestoreClinicCard(
+                                        clinic = clinic,
+                                        onCardClick = {
+                                            onDoctorClick(
                                                 FirestoreClinicItem(
                                                     id = clinic.id,
                                                     name = clinic.name,
@@ -352,25 +346,9 @@ fun DashBoardScreen(
                                                     avatarBgHex = clinic.avatarBgHex,
                                                     imageUrl = clinic.imageUrl,
                                                 )
-                                            ) })
-                                    }
-//                                } else {
-//                                    items(
-//                                        items = uiState.vets.take(4),
-//                                        key = { it.id }
-//                                    ) { vet ->
-//                                        VetDoctorCard(
-//                                            vet = vet,
-//                                            onCardClick = { onDoctorClick(vet) }
-//                                        )
-//                                    }
-//                                }
-//                                items(uiState.vets.take(4), key = { it.id }) { vet ->
-//                                    VetDoctorCard(
-//                                        vet = vet,
-//                                        onCardClick = { onDoctorClick(vet) }
-//                                    )
-//                                }
+                                            )
+                                        })
+                                }
                             }
                         }
                     }
@@ -692,30 +670,37 @@ fun VetDoctorCard(
 
 @Composable
 fun InfoBadge(
-    icon: ImageVector,
-    iconTint: Color,
+    icon: ImageVector? = null,
+    iconTint: Color? = null,
     text: String,
-    textColor: Color
+    textColor: Color,
+    containerColor: Color = Color(0xFFF1F5F9)
 ) {
-    Row(
-        modifier = Modifier
-            .background(BadgeGrayBg, RoundedCornerShape(6.dp))
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        shape = RoundedCornerShape(6.dp),
+        color = containerColor
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = iconTint,
-            modifier = Modifier.size(14.dp)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = text,
-            color = textColor,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold
-        )
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
+            if (icon != null && iconTint != null) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconTint,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = text,
+                color = textColor,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
     }
 }
 

@@ -32,6 +32,7 @@ import coil.compose.AsyncImage
 import com.example.vetcare.ViewModel.HomeViewModel
 import com.example.vetcare.model.data.FirestoreClinicItem
 import com.example.vetcare.model.data.VetDoctor
+import com.example.vetcare.ui.theme.*
 import com.example.vetcare.utils.IntentUtils.openDialer
 
 //
