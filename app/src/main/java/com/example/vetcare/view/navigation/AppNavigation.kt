@@ -15,18 +15,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.vetcare.ViewModel.HomeViewModel
+import com.example.vetcare.utils.Screen
 import com.example.vetcare.view.Screen.AddDoctorClinicScreen
 
-sealed class Screen(val route: String) {
-    data object Onboarding : Screen("onboarding")
-    data object Dashboard : Screen("dashboard")
-    data object VeterinaryNearYou : Screen("veterinary_near_you")
-    data object ProvidesServices : Screen("provides_services")
-    data object Appointment : Screen("appointment/{vetId}") {
-        fun createRoute(vetId: String) = "appointment/$vetId"
-    }
-    data object AddClinic : Screen("add_clinic")
-}
 
 @Composable
 fun AppNavigation(
